@@ -1,7 +1,7 @@
 import { http, HttpResponse } from 'msw';
 
-// Use NEXT_PUBLIC_API_BASE_URL from env, fallback to a default if not set
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
+// Use API_BASE_URL from env, fallback to a default if not set
+const API_BASE = process.env.API_BASE_URL || 'http://localhost:8000';
 
 // Define mock data
 const mockUser = {

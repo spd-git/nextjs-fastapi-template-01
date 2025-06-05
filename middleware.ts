@@ -7,10 +7,26 @@ export async function middleware(request: NextRequest) {
   const mockModeEnabled = process.env.NEXT_PUBLIC_MOCK_MODE === "true";
 
   if (mockModeEnabled) {
-    console.log("[Middleware] Mock mode enabled. Bypassing authentication and allowing request.");
-    // In mock mode, we assume the user is authenticated and allow the request to proceed.
-    // MSW will handle the API requests to return mock data.
-    return NextResponse.next();
+    console.log("[Middleware] Mock mode enabled. Setting mock access token.");
+    
+    // Create a response object
+    const response = NextResponse.next();
+    
+    // Set a mock access token cookie if it doesn't exist
+    if (!request.cookies.has("accessToken")) {
+      const mockToken = "mock_access_token_1234567890";
+      response.cookies.set({
+        name: "accessToken",
+        value: mockToken,
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        path: "/",
+      });
+      console.log("[Middleware] Set mock access token cookie");
+    }
+    
+    return response;
   }
 
   // Original authentication logic for non-mock mode
@@ -27,7 +43,15 @@ export async function middleware(request: NextRequest) {
       Authorization: `Bearer ${token.value}`,
     },
   };
+  const { error } = await usersCurrentUser(options);
 
+  if (error) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+  return NextResponse.next();
+
+
+/*
   try {
     console.log("[Middleware] Validating token with usersCurrentUser API...");
     // Note: usersCurrentUser is an async function that returns { data, error, response }
@@ -60,6 +84,7 @@ export async function middleware(request: NextRequest) {
     response.cookies.delete("accessToken");
     return response;
   }
+*/
 }
 
 export const config = {
