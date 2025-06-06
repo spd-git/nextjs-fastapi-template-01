@@ -794,6 +794,51 @@
           }
         }
       }
+    },
+    "/posts/": {
+      "post": {
+        "tags": [
+          "posts"
+        ],
+        "summary": "Create Post",
+        "operationId": "create_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array",
+                  "title": "Response Posts-Create Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -992,6 +1037,34 @@
           "user_id"
         ],
         "title": "ItemRead"
+      },
+      "PostCreate": {
+        "properties": {
+          "brandName": {
+            "type": "string",
+            "title": "Brandname"
+          },
+          "location": {
+            "type": "string",
+            "title": "Location"
+          },
+          "industry": {
+            "type": "string",
+            "title": "Industry"
+          },
+          "websiteURL": {
+            "type": "string",
+            "title": "Websiteurl"
+          }
+        },
+        "type": "object",
+        "required": [
+          "brandName",
+          "location",
+          "industry",
+          "websiteURL"
+        ],
+        "title": "PostCreate"
       },
       "UserCreate": {
         "properties": {

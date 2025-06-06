@@ -42,7 +42,7 @@ export default function Page() {
                 id="email"
                 name="email"
                 type="email"
-                placeholder="m@example.com"
+                placeholder="mail@example.com"
                 required
                 className="border-gray-300 dark:border-gray-600"
               />
