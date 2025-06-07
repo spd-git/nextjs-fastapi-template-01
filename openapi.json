@@ -819,13 +819,47 @@
               "application/json": {
                 "schema": {
                   "items": {
-                    "type": "object"
+                    "$ref": "#/components/schemas/PostResponse"
                   },
                   "type": "array",
                   "title": "Response Posts-Create Post"
                 }
               }
             }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/image/generate": {
+      "post": {
+        "tags": [
+          "image"
+        ],
+        "summary": "Generate Image",
+        "operationId": "generate_image",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImagePrompt"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response"
           },
           "422": {
             "description": "Validation Error",
@@ -956,6 +990,19 @@
         "type": "object",
         "title": "HTTPValidationError"
       },
+      "ImagePrompt": {
+        "properties": {
+          "imagePrompt": {
+            "type": "string",
+            "title": "Imageprompt"
+          }
+        },
+        "type": "object",
+        "required": [
+          "imagePrompt"
+        ],
+        "title": "ImagePrompt"
+      },
       "ItemCreate": {
         "properties": {
           "name": {
@@ -1065,6 +1112,29 @@
           "websiteURL"
         ],
         "title": "PostCreate"
+      },
+      "PostResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "caption": {
+            "type": "string",
+            "title": "Caption"
+          },
+          "image_prompt": {
+            "type": "string",
+            "title": "Image Prompt"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "caption",
+          "image_prompt"
+        ],
+        "title": "PostResponse"
       },
       "UserCreate": {
         "properties": {
