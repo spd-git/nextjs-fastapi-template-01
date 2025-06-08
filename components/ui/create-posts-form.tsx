@@ -4,21 +4,29 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-// import { Textarea } from '@/components/ui/textarea';
+import { PostFormat } from '@/components/ui/posts/defaults/postFormat';
+import { generatePosts } from '@/components/actions/posts-action';
 
-interface Post {
-  id: number;
-  imageUrl: string;
+export interface Post {
+  id: string;
   caption: string;
+  image_prompt: string;
 }
 
-export function CreatePostsForm() {
-  const [formData, setFormData] = useState({
-    brandName: '',
-    location: '',
-    industry: '',
-    websiteUrl: '',
-  });
+interface FormData {
+  brandName: string;
+  location: string;
+  industry: string;
+  websiteUrl: string;
+}
+
+export function CreatePostsForm({ initialData = {
+  brandName: '',
+  location: '',
+  industry: '',
+  websiteUrl: '',
+} }: { initialData?: Partial<FormData> }) {
+  const [formData, setFormData] = useState<FormData>(initialData as FormData);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedPosts, setGeneratedPosts] = useState<Post[]>([]);
 
@@ -30,22 +38,30 @@ export function CreatePostsForm() {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsGenerating(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      // Generate 3 placeholder posts
-      const posts = Array.from({ length: 3 }, (_, i) => ({
-        id: i + 1,
-        imageUrl: `https://via.placeholder.com/1080x1080?text=Post+${i + 1}`,
-        caption: `Post ${i + 1} for ${formData.brandName} in ${formData.industry} industry. Location: ${formData.location}. Visit us at ${formData.websiteUrl}`,
-      }));
-      
-      setGeneratedPosts(posts);
+    try {
+      console.log(formData);
+      const result = await generatePosts(formData);
+      // Handle the response
+      if (Array.isArray(result)) {
+        // If response is an array, it's the success case with posts
+        setGeneratedPosts(result);
+      } else if (result && 'message' in result) {
+        // Handle error cases
+        console.error('Error generating posts:', result.message);
+        // You might want to show this error to the user
+      } else {
+        // Handle any other unexpected response
+        console.error('Unexpected response format:', result);
+      }
+    } catch (error) {
+      console.error('Error generating posts:', error);
+    } finally {
       setIsGenerating(false);
-    }, 1500);
+    }
   };
 
   return (
@@ -113,19 +129,11 @@ export function CreatePostsForm() {
         <div className="mt-12">
           <h2 className="text-2xl font-semibold mb-6">Generated Posts</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {generatedPosts.map((post) => (
-              <div key={post.id} className="border rounded-lg overflow-hidden shadow-sm">
-                <img 
-                  src={post.imageUrl} 
-                  alt={`Post ${post.id}`} 
-                  className="w-full aspect-square object-cover"
-                />
-                <div className="p-4">
-                  <h3 className="font-medium mb-2">Post {post.id}</h3>
-                  <p className="text-sm text-gray-600">{post.caption}</p>
-                </div>
-              </div>
-            ))}
+            {
+              generatedPosts.map((post) => (
+                <PostFormat key={post.id} post={post} />
+              ))
+            }
           </div>
         </div>
       )}

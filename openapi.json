@@ -794,6 +794,85 @@
           }
         }
       }
+    },
+    "/posts/": {
+      "post": {
+        "tags": [
+          "posts"
+        ],
+        "summary": "Create Post",
+        "operationId": "create_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/PostResponse"
+                  },
+                  "type": "array",
+                  "title": "Response Posts-Create Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/image/generate": {
+      "post": {
+        "tags": [
+          "image"
+        ],
+        "summary": "Generate Image",
+        "operationId": "generate_image",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImagePrompt"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -911,6 +990,19 @@
         "type": "object",
         "title": "HTTPValidationError"
       },
+      "ImagePrompt": {
+        "properties": {
+          "imagePrompt": {
+            "type": "string",
+            "title": "Imageprompt"
+          }
+        },
+        "type": "object",
+        "required": [
+          "imagePrompt"
+        ],
+        "title": "ImagePrompt"
+      },
       "ItemCreate": {
         "properties": {
           "name": {
@@ -992,6 +1084,57 @@
           "user_id"
         ],
         "title": "ItemRead"
+      },
+      "PostCreate": {
+        "properties": {
+          "brandName": {
+            "type": "string",
+            "title": "Brandname"
+          },
+          "location": {
+            "type": "string",
+            "title": "Location"
+          },
+          "industry": {
+            "type": "string",
+            "title": "Industry"
+          },
+          "websiteURL": {
+            "type": "string",
+            "title": "Websiteurl"
+          }
+        },
+        "type": "object",
+        "required": [
+          "brandName",
+          "location",
+          "industry",
+          "websiteURL"
+        ],
+        "title": "PostCreate"
+      },
+      "PostResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "caption": {
+            "type": "string",
+            "title": "Caption"
+          },
+          "image_prompt": {
+            "type": "string",
+            "title": "Image Prompt"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "caption",
+          "image_prompt"
+        ],
+        "title": "PostResponse"
       },
       "UserCreate": {
         "properties": {
